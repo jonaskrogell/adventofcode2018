@@ -30,6 +30,16 @@ def sumMeta(tree, s = 0):
     return s
 
 
+def checksumMeta(tree, s = 0):
+    if tree['child_quantity'] == 0:
+        return sum(tree['meta'])
+    for meta in tree['meta']:
+        if meta > tree['child_quantity']:
+            continue
+        s += checksumMeta(tree['childs'][meta - 1])
+    return s
+
+
 print('Input nodes: %s' % nodes)
 node_index, data, tree = parseNodes(0, nodes)
 print('Final node_index: %i' % node_index)
@@ -37,4 +47,5 @@ print('Tree:')
 pp = pprint.PrettyPrinter(indent=1)
 pp.pprint(tree)
 
-print('Sum of meta: %i' % sumMeta(tree))
+print('Part1-sum of meta: %i' % sumMeta(tree))
+print('Part2-sum of meta: %i' % checksumMeta(tree))
