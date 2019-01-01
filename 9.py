@@ -1,38 +1,31 @@
 import time
-
+import collections
 
 def playMarbles(players, last_marble, score=None):
     print('Playing with %i players and last marble %i' % (players, last_marble))
     player_scores = {}
     current_player = 1
-    circle = [0]
+    circle = collections.deque([0])
     current_marble = 0
 
     t = time.time()
     for x in range(1, last_marble + 1):
-        if t is None or time.time() - t > 10:
+        if x % 1000 == 0 and time.time() - t > 1:
             print('%i / %i done (%f%%)' % (x, last_marble, 100.0*x/last_marble))
             t = time.time()
-    #    print(current_player, x, circle)
+#        print(current_player, x, circle)
         if x % 23 == 0:
-    #        print('23!')
             if current_player not in player_scores:
                 player_scores[current_player] = 0
             player_scores[current_player] += x
-            remove_marble_position = (current_marble - 7) % len(circle)
-            player_scores[current_player] += circle[remove_marble_position]
-            circle.pop(remove_marble_position)
-            current_marble = remove_marble_position % len(circle)
+            circle.rotate(7)
+            player_scores[current_player] += circle.pop()
+            circle.rotate(-1)
         else:
-            next_marble_position = ((current_marble + 1) % (len(circle))) + 1
-            circle.insert(next_marble_position, x)
-    #        print('Player %i inserted %i at position %i' % (current_player, x, next_marble_position))
-            current_marble = next_marble_position
-    #    print(current_player, x, circle)
+            circle.rotate(-1)
+            circle.append(x)
         current_player = (current_player % players) + 1
 
-#    print('Final scores:')
-#    print(player_scores)
     m = max(player_scores.values())
     if score is not None:
         if m == score:
