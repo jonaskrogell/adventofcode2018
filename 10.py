@@ -1,5 +1,4 @@
 import sys
-import time
 
 points = []
 
@@ -58,8 +57,7 @@ while True:
     is_message = printPoints(points)
 #    print('Is message: %s' % is_message)
     if is_message:
+        print('Took %i seconds' % (t))
         break
     t += 1
     movePoints(points)
-#    time.sleep(1)
-#print(points)
