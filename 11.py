@@ -26,12 +26,20 @@ def getMaxSquare(size, serial, correct_sum=None, correct_x=None, correct_y=None)
     max_x = None
     max_y = None
     for y in range(1, 300 - size + 2):
+        prev_s = None
         for x in range(1, 300 - size + 2):
-            # do square check
-            s = 0
-            for s_y in range(size):
-                for s_x in range(size):
-                    s += getPower(x + s_x, y + s_y, serial)
+            if prev_s is None:
+                # do square check from scratch
+                s = 0
+                for s_y in range(size):
+                    for s_x in range(size):
+                        s += getPower(x + s_x, y + s_y, serial)
+            else:
+                s = prev_s
+                for s_y in range(size):
+                    s -= getPower(x - 1 , y + s_y, serial)
+                    s += getPower(x + size - 1, y + s_y, serial)
+            prev_s = s
             if max_sum is None or s > max_sum:
                 max_sum = s
                 max_x = x
