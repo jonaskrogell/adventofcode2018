@@ -1,7 +1,3 @@
-import sys
-
-serial = int(sys.stdin.read().strip())
-
 def getPower(x, y, serial, correct_power=None):
     #Find the fuel cell's rack ID, which is its X coordinate plus 10.
     power = x + 10
@@ -19,12 +15,32 @@ def getPower(x, y, serial, correct_power=None):
         power = 0
     #Subtract 5 from the power level.
     power -= 5
-
     if correct_power is not None:
         if power != correct_power:
             raise Exception('Testing failed for %i,%i serial %i with expected power %i, but got %i.' % (x, y, serial, correct_power, power))
-
     return power
+
+
+def getMaxSquare(size, serial, correct_sum=None, correct_x=None, correct_y=None):
+    max_sum = None
+    max_x = None
+    max_y = None
+    for y in range(1, 300 - size + 2):
+        for x in range(1, 300 - size + 2):
+            # do square check
+            s = 0
+            for s_y in range(size):
+                for s_x in range(size):
+                    s += getPower(x + s_x, y + s_y, serial)
+            if max_sum is None or s > max_sum:
+                max_sum = s
+                max_x = x
+                max_y = y
+    if correct_sum is not None:
+        if max_sum != correct_sum or max_x != correct_x or max_y != correct_y:
+            raise Exception('Testing failed for size %i serial %i. Sum: %i %i X: %i %i Y: %i %i' % (size, serial, correct_sum, max_sum, correct_x, max_x, correct_y, max_y))
+    return max_sum, max_x, max_y, size
+
 
 # tests
 getPower(3,5, 8, 4)
@@ -32,20 +48,18 @@ getPower(122,79, 57, -5)
 getPower(217,196, 39, 0)
 getPower(101,153, 71, 4)
 
+getMaxSquare(3, 18, 29, 33, 45)
+getMaxSquare(3, 42, 30, 21, 61)
+getMaxSquare(16, 18, 113, 90,269)
+getMaxSquare(12, 42, 119, 232,251)
+print('Tests passed.')
 
-max_sum = None
-max_x = None
-max_y = None
-for y in range(1, 299):
-    for x in range(1, 299):
-        # do square check
-        s = 0
-        for s_y in range(3):
-            for s_x in range(3):
-                s += getPower(x + s_x, y + s_y, serial)
-        if max_sum is None or s > max_sum:
-            max_sum = s
-            max_x = x
-            max_y = y
+# Jonas serial
+serial = 7803
+max_sum, max_x, max_y, size = getMaxSquare(3, serial)
+print('Max sum of %i found at %i,%i of square size %i' % (max_sum, max_x, max_y, size))
 
-print('Max sum of %i found at %i,%i' % (max_sum, max_x, max_y))
+print('Brute force the size:')
+for size in range(300):
+    max_sum, max_x, max_y, size = getMaxSquare(size, serial)
+    print('Max sum of %i found at %i,%i of square size %i' % (max_sum, max_x, max_y, size))
