@@ -33,20 +33,19 @@ def getMaxSquare(grid, size, correct_sum=None, correct_x=None, correct_y=None):
     max_x = None
     max_y = None
 
-    for y in range(1, 300 - size + 2):
+    for x in range(1, 300 - size + 2):
         prev_s = None
-        for x in range(1, 300 - size + 2):
+        for y in range(1, 300 - size + 2):
             if prev_s is None:
                 # do square check from scratch
                 s = 0
                 for s_y in range(size):
-                    for s_x in range(size):
-                        s += grid[y + s_y][x + s_x]
+                    s += sum(grid[y + s_y][x : x + size])
             else:
                 s = prev_s
-                for s_y in range(size):
-                    s -= grid[y + s_y][x - 1]
-                    s += grid[y + s_y][x + size - 1]
+                s -= sum(grid[y - 1][x : x + size])
+                s += sum(grid[y + size - 1][x : x + size])
+
             prev_s = s
             if max_sum is None or s > max_sum:
                 max_sum = s
