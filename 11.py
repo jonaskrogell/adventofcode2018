@@ -75,6 +75,11 @@ max_sum, max_x, max_y, size = getMaxSquare(grid, 3)
 print('Max sum of %i found at %i,%i of square size %i' % (max_sum, max_x, max_y, size))
 
 print('Brute force the size:')
+sizes = []
 for size in range(300):
     max_sum, max_x, max_y, size = getMaxSquare(grid, size)
+    sizes.append({'size': size, 'max_sum': max_sum, 'x': max_x, 'y': max_y})
     print('Max sum of %i found at %i,%i of square size %i' % (max_sum, max_x, max_y, size))
+
+print('Final answer:')
+print(max(sizes, key=lambda k: k['max_sum']))
