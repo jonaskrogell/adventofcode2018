@@ -8,8 +8,9 @@ def printScoreboard(scoreboard, elves):
             print('%i  ' % scoreboard[pos], end='')
     print('')
 
-def doRecepies(recepies):
-    print('Doing %i recepies' % recepies)
+
+def doRecepies(recepies, search=False):
+    print('Doing %s recepies, search=%s' % (str(recepies), str(search)))
     elves = []
     for elve in range(2):
         elves.append(elve)
@@ -19,26 +20,28 @@ def doRecepies(recepies):
         sum = 0
         for elve in elves:
             sum += scoreboard[elve]
-        # nrs = []
-        # while sum > 0:
-        #     nrs.append(sum % 10)
-        #     sum = int((sum - sum % 10)/10)
-        # nrs.reverse()
-        # for nr in nrs:
-        #     scoreboard.append(nr)
         for digit in str(sum):
             scoreboard.append(int(digit))
         for elve in range(len(elves)):
             elves[elve] = (elves[elve] + scoreboard[elves[elve]] + 1) % len(scoreboard)
-
-        if len(scoreboard) >= recepies + 10:
-            break
+        if not search:
+            if len(scoreboard) >= recepies + 10:
+                return ''.join(map(str, scoreboard[recepies:recepies+10]))
+        else:
+            if recepies in ''.join(map(str, scoreboard[-(len(str(sum))+len(recepies)):])):
+                return ''.join(map(str, scoreboard)).index(recepies)
 #    printScoreboard(scoreboard, elves)
-    return ''.join(map(str, scoreboard[recepies:recepies+10]))
 
 print(doRecepies(9) == '5158916779')
 print(doRecepies(5) == '0124515891')
 print(doRecepies(18) == '9251071085')
 print(doRecepies(2018) == '5941429882')
 
-print(doRecepies(681901))
+print('Answer 14a: %s' % doRecepies(681901))
+
+print(doRecepies('51589', search=True) == 9)
+print(doRecepies('01245', search=True) == 5)
+print(doRecepies('92510', search=True) == 18)
+print(doRecepies('59414', search=True) == 2018)
+
+print('Answer 14b: %s' % doRecepies('681901', search=True))
